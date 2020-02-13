@@ -9,5 +9,8 @@ $ docker build --tag rdf-pubtator
 ## Execution
 
 ```bash
-$ docker run --rm -v $(pwd):/data rdf-pubtator
+$ docker run --rm -v [WORK]:/work -v [DATA]:/data rdf-pubtator
 ```
+[WORK]: Download file location
+
+[DATA]: Converted file location
