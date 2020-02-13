@@ -1,20 +1,22 @@
 #!/bin/bash
 
-wget -q https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz
-wget -q https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz
-wget -q https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz
+cd /work
+
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz 2> /dev/stdout
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz 2> /dev/stdout
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz 2> /dev/stdout
 
 gzip -d disease2pubtatorcentral.gz
 gzip -d gene2pubtatorcentral.gz
 gzip -d mutation2pubtatorcentral.gz
 
 split -10000000 ./disease2pubtatorcentral disease2pubtatorcentral-
-for i in disease2pubtatorcentral-*; do python ./RDFizing_disease2pubtator.py ./$i /data/${i}.ttl; rm $i;done
+for i in disease2pubtatorcentral-*; do python /RDFizing_disease2pubtator.py ./$i /data/${i}.ttl; done
 
 split -10000000 ./gene2pubtatorcentral gene2pubtatorcentral-
-for i in gene2pubtatorcentral-*; do python ./RDFizing_gene2pubtator.py ./$i ./data/${i}.ttl; rm $i;done
+for i in gene2pubtatorcentral-*; do python /RDFizing_gene2pubtator.py ./$i /data/${i}.ttl; done
 
-python ./RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral ./data/mutation2pubtatorcentral.ttl && rm ./mutation2pubtatorcentral
+python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
-chmod 777 -R ./data
+cd /data && chmod 777 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
 
