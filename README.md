@@ -3,10 +3,10 @@
 ## Installation 
 
 ```bash
-$ docker build --tag rdf-pubtator
+$ docker build --tag rdf-pubtator .
 ```
 
-## Execution
+## Run
 
 ```bash
 $ docker run --rm -v [WORK]:/work -v [DATA]:/data rdf-pubtator
