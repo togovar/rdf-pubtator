@@ -2,9 +2,9 @@
 
 cd /work
 
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz 2> /dev/stdout
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz 2> /dev/stdout
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz 2> /dev/stdout
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz -O disease2pubtatorcentral.gz 2> /dev/stdout
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz -O gene2pubtatorcentral.gz 2> /dev/stdout
+wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz -O mutation2pubtatorcentral.gz 2> /dev/stdout
 
 gzip -d disease2pubtatorcentral.gz
 gzip -d gene2pubtatorcentral.gz
