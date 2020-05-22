@@ -36,11 +36,14 @@ def make_rdf(infile_pubtator, outfile_rdf):
     fh_in = open(infile_pubtator, 'r')
     reader = csv.reader(fh_in, delimiter="\t")
     for row in reader:
-        pmid     = row[0]
-        disease  = row[2]
-        mention  = row[3]
-        resource = row[4]
-        list_resource = resource.split('|')
+        try:
+            pmid     = row[0]
+            disease  = row[2]
+            mention  = row[3]
+            resource = row[4]
+            list_resource = resource.split('|')
+        except IndexError:
+            continue
 
         # skip header
         if pmid == "PMID":

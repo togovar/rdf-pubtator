@@ -21,7 +21,7 @@ def make_rdf(infile_pubtator, outfile_rdf):
     ns_pubmed   = Namespace("http://identifiers.org/pubmed/")
     ns_dbsnp    = Namespace("http://identifiers.org/dbsnp/")
     ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
-    ns_mesh     = Namespace("http://identifiers.org/mesh/")
+    ns_mesh     = Namespace("http://id.nlm.nih.gov/mesh/")
     ns_omim     = Namespace("http://identifiers.org/omim/")
     
     g.bind('oa', ns_oa)
@@ -56,6 +56,7 @@ def make_rdf(infile_pubtator, outfile_rdf):
         g.add( (blank, RDF.type, URIRef(ns_oa.Annotation)) )
         g.add( (blank, URIRef(ns_oa.hasTarget), URIRef(ns_pubmed + pmid)) )
         component = component.replace(' ', '')
+        component = component.split(';')[0]
         g.add( (blank, URIRef(ns_oa.hasBody), URIRef(ns_dbsnp + component)) )
         for s in list_resource:
             g.add( (blank, URIRef(ns_dcterms.source), Literal(s)) )

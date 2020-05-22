@@ -2,6 +2,7 @@
 
 cd /work
 
+# 
 wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz -O disease2pubtatorcentral.gz 2> /dev/stdout
 wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz -O gene2pubtatorcentral.gz 2> /dev/stdout
 wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz -O mutation2pubtatorcentral.gz 2> /dev/stdout
@@ -18,5 +19,6 @@ for i in gene2pubtatorcentral-*; do python /RDFizing_gene2pubtator.py ./$i /data
 
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
+chmod 777 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
 cd /data && chmod 777 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
 
