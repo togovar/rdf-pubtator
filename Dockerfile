@@ -3,12 +3,13 @@ FROM python
 WORKDIR /
 
 ADD ./ /
-ENV PATH $PATH:/
+ADD ./convert_pubtator /bin
 
 RUN mkdir /data
 RUN pip install rdflib
 
-CMD convert_pubtator
+ENTRYPOINT [ "convert_pubtator" ]
+
 
 
 

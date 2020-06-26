@@ -1,15 +1,48 @@
 #!/bin/bash
 
+
+FORCE_CONVERT=0
+
+# オプションの読み取り
+while getopts f OPT
+do
+  case $OPT in
+    f)  FORCE_CONVERT=1
+        ;;
+  esac
+done
+shift  $(($OPTIND - 1))
+
+
 cd /work
 
-# 
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz -O disease2pubtatorcentral.gz 2> /dev/stdout
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz -O gene2pubtatorcentral.gz 2> /dev/stdout
-wget https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz -O mutation2pubtatorcentral.gz 2> /dev/stdout
+# ファイルのダウンロード
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz 2> /wget_disease.log
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz 2> /wget_gene.log
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz 2> /wget_mutation.log
 
-gzip -d disease2pubtatorcentral.gz
-gzip -d gene2pubtatorcentral.gz
-gzip -d mutation2pubtatorcentral.gz
+# ダウンロードログの出力
+cat /wget_disease.log /wget_gene.log /wget_mutation.log > /dev/stdout
+
+num_of_newfiles_disease=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_disease.log | grep -v "'.listing' saved" | wc -l `
+num_of_newfiles_gene=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_gene.log | grep -v "'.listing' saved" | wc -l `
+num_of_newfiles_mutation=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_mutation.log | grep -v "'.listing' saved" | wc -l `
+
+echo $num_of_newfiles_disease
+echo $num_of_newfiles_gene
+echo $num_of_newfiles_mutation
+echo $FORCE_CONVERT
+
+if [ $num_of_newfiles_disease -eq 0 ] && [ $num_of_newfiles_gene -eq 0 ] && [ $num_of_newfiles_mutation -eq 0 ] && [ $FORCE_CONVERT -eq 0 ]; then
+  echo
+  echo "No RDF files were generated because no new files were found at the download site."
+  exit 0
+fi
+
+gzip -dc disease2pubtatorcentral.gz > disease2pubtatorcentral
+gzip -dc gene2pubtatorcentral.gz > gene2pubtatorcentral
+gzip -dc mutation2pubtatorcentral.gz > mutation2pubtatorcentral
+
 
 split -10000000 ./disease2pubtatorcentral disease2pubtatorcentral-
 for i in disease2pubtatorcentral-*; do python /RDFizing_disease2pubtator.py ./$i /data/${i}.ttl; done
@@ -19,6 +52,6 @@ for i in gene2pubtatorcentral-*; do python /RDFizing_gene2pubtator.py ./$i /data
 
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
-chmod 777 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
-cd /data && chmod 777 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
+chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
+cd /data && chmod 666 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
 
