@@ -2,12 +2,14 @@
 
 
 FORCE_CONVERT=0
-
+NUM_PARALLEL = 1
 # オプションの読み取り
-while getopts f OPT
+while getopts fP: OPT
 do
   case $OPT in
     f)  FORCE_CONVERT=1
+        ;;
+    P)  NUM_PARALLEL = $OPTARG
         ;;
   esac
 done
@@ -43,13 +45,11 @@ gzip -dc disease2pubtatorcentral.gz > disease2pubtatorcentral
 gzip -dc gene2pubtatorcentral.gz > gene2pubtatorcentral
 gzip -dc mutation2pubtatorcentral.gz > mutation2pubtatorcentral
 
-
 split -10000000 ./disease2pubtatorcentral disease2pubtatorcentral-
-for i in disease2pubtatorcentral-*; do python /RDFizing_disease2pubtator.py ./$i /data/${i}.ttl; done
+ls disease2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
 
 split -10000000 ./gene2pubtatorcentral gene2pubtatorcentral-
-for i in gene2pubtatorcentral-*; do python /RDFizing_gene2pubtator.py ./$i /data/${i}.ttl; done
-
+ls gene2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
 chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
