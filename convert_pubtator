@@ -3,6 +3,7 @@
 
 FORCE_CONVERT=0
 NUM_PARALLEL=1
+
 # オプションの読み取り
 while getopts fP: OPT
 do
@@ -19,9 +20,13 @@ shift  $(($OPTIND - 1))
 cd /work
 
 # ファイルのダウンロード
+now=`date "+%Y%m%d-%H%M%S"`
+echo "Started wget at $now"
 wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz 2> /wget_disease.log
 wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz 2> /wget_gene.log
 wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz 2> /wget_mutation.log
+now=`date "+%Y%m%d-%H%M%S"`
+echo "Finished wget at $now"
 
 # ダウンロードログの出力
 cat /wget_disease.log /wget_gene.log /wget_mutation.log > /dev/stdout
@@ -41,6 +46,9 @@ gzip -dc disease2pubtatorcentral.gz > disease2pubtatorcentral
 gzip -dc gene2pubtatorcentral.gz > gene2pubtatorcentral
 gzip -dc mutation2pubtatorcentral.gz > mutation2pubtatorcentral
 
+now=`date "+%Y%m%d-%H%M%S"`
+echo "Started convert at $now"
+
 split -10000000 ./disease2pubtatorcentral disease2pubtatorcentral-
 ls disease2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
 
@@ -48,6 +56,10 @@ split -10000000 ./gene2pubtatorcentral gene2pubtatorcentral-
 ls gene2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
+now=`date "+%Y%m%d-%H%M%S"`
+echo "Finished convert at $now"
+
 chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
 cd /data && chmod 666 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
+
 
