@@ -35,6 +35,7 @@ num_of_newfiles_disease=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_disease.log |
 num_of_newfiles_gene=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_gene.log | grep -v "'.listing' saved" | wc -l `
 num_of_newfiles_mutation=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_mutation.log | grep -v "'.listing' saved" | wc -l `
 
+chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
 
 if [ $num_of_newfiles_disease -eq 0 ] && [ $num_of_newfiles_gene -eq 0 ] && [ $num_of_newfiles_mutation -eq 0 ] && [ $FORCE_CONVERT -eq 0 ]; then
   echo
