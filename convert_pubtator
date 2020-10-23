@@ -31,9 +31,9 @@ echo "Finished wget at $now"
 # ダウンロードログの出力
 cat /wget_disease.log /wget_gene.log /wget_mutation.log > /dev/stdout
 
-num_of_newfiles_disease=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_disease.log | grep -v "'.listing' saved" | wc -l `
-num_of_newfiles_gene=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_gene.log | grep -v "'.listing' saved" | wc -l `
-num_of_newfiles_mutation=`egrep "' saved \[[0-9]+/[0-9]+\]" /wget_mutation.log | grep -v "'.listing' saved" | wc -l `
+num_of_newfiles_disease=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_disease.log | grep -v "'.listing' saved" | wc -l `
+num_of_newfiles_gene=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_gene.log | grep -v "'.listing' saved" | wc -l `
+num_of_newfiles_mutation=`egrep "' saved \[+[0-9]+/+[0-9]+\]" /wget_mutation.log | grep -v "'.listing' saved" | wc -l `
 
 
 if [ $num_of_newfiles_disease -eq 0 ] && [ $num_of_newfiles_gene -eq 0 ] && [ $num_of_newfiles_mutation -eq 0 ] && [ $FORCE_CONVERT -eq 0 ]; then
