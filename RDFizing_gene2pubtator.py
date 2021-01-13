@@ -18,7 +18,7 @@ def make_rdf(infile_pubtator, outfile_rdf):
     data        = Namespace("http://www.w3.org/ns/oa#")
     ns_oa       = Namespace("http://www.w3.org/ns/oa#")
     ns_dcterms  = Namespace("http://purl.org/dc/terms/")
-    ns_pubmed   = Namespace("http://identifiers.org/pubmed/")
+    ns_pubmed   = Namespace("http://rdf.ncbi.nlm.nih.gov/pubmed/")
     ns_dbsnp    = Namespace("http://identifiers.org/dbsnp/")
     ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
     ns_mesh     = Namespace("http://id.nlm.nih.gov/mesh/")
