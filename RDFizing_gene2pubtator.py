@@ -48,7 +48,7 @@ def make_rdf(infile_pubtator, outfile_rdf):
             continue
 
         # skip non rs number
-        match = re.match(r'^[0-9;]+$', ncbi_gene)
+        match = re.match(r'^[0-9;]+$|None', ncbi_gene)
         if not match:
             print('Error: "' + ncbi_gene + '" is not match RS number format', file=sys.stderr)
             continue
