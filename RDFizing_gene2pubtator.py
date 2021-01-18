@@ -41,9 +41,9 @@ def make_rdf(infile_pubtator, outfile_rdf):
         row_num += 1
         idx = len(row)
         if idx < 5:
-            print(str(infile_pubtator))
+            print(str(infile_pubtator), file=sys.stderr)
             print('Error: row number:"' + str(row_num) + '" does not have enough data', file=sys.stderr)
-            print(str(row))
+            print(str(row), file=sys.stderr)
             continue
 
         pmid      = row[0]
