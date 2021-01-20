@@ -34,20 +34,24 @@ def make_rdf(infile_pubtator, outfile_rdf):
 
 
     fh_in = open(infile_pubtator, 'r')
-    #reader = csv.reader(fh_in, delimiter="\t")
-    lines = fh_in.readlines()
+    reader = csv.reader(fh_in, delimiter="\t")
     row_num = 0
-    for line in lines:
-        row = line.rstrip('\n').split('\t')
-        #print(str(row))
+    for row in reader:
+
+        row_num += 1
+        idx = len(row)
+        if idx < 5:
+            print(str(infile_pubtator), file=sys.stderr)
+            print('Error: row number:"' + str(row_num) + '" does not have enough data', file=sys.stderr)
+            print(str(row), file=sys.stderr)
+            continue
+
         pmid      = row[0]
         ncbi_gene = row[2]
         list_gene = ncbi_gene.split(';')
         mention   = row[3]
         resource  = row[4]
         list_resource = resource.split('|')
-        
-        
 
         # skip header
         if pmid == "PMID":
