@@ -34,8 +34,11 @@ def make_rdf(infile_pubtator, outfile_rdf):
 
 
     fh_in = open(infile_pubtator, 'r')
-    reader = csv.reader(fh_in, delimiter="\t")
-    for row in reader:
+    #reader = csv.reader(fh_in, delimiter="\t")
+    lines = fh_in.readlines()
+    row_num = 0
+    for line in lines:
+        row = line.rstrip('\n').split('\t')
         pmid      = row[0]
         component = row[2]
         # skip non rs number
