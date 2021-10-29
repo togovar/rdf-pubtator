@@ -55,10 +55,10 @@ echo "Started convert at $now"
 
 # コンバータの仕様に合わせて1000万行毎のファイルに分割してからRDF変換を行う
 split -10000000 ./disease2pubtatorcentral disease2pubtatorcentral-
-ls disease2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
+ls disease2pubtatorcentral-* | xargs -P$NUM_PARALLEL -IFILE python /RDFizing_disease2pubtator.py ./FILE /data/FILE.ttl
 
 split -10000000 ./gene2pubtatorcentral gene2pubtatorcentral-
-ls gene2pubtatorcentral-* | xargs -n1 -P$NUM_PARALLEL -IFILE python /RDFizing_gene2pubtator.py ./FILE /data/FILE.ttl
+ls gene2pubtatorcentral-* | xargs -P$NUM_PARALLEL -IFILE python /RDFizing_gene2pubtator.py ./FILE /data/FILE.ttl
 
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
