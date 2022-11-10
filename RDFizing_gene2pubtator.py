@@ -23,7 +23,8 @@ def make_rdf(infile_pubtator, outfile_rdf):
     ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
     ns_mesh     = Namespace("http://id.nlm.nih.gov/mesh/")
     ns_omim     = Namespace("http://identifiers.org/omim/")
-    
+    ns_subj     = Namespace("http://purl.jp/bio/10/pubtator-central/Gene/")
+
     g.bind('oa', ns_oa)
     g.bind('dcterms', ns_dcterms)
     g.bind('pubmed', ns_pubmed)
@@ -31,7 +32,7 @@ def make_rdf(infile_pubtator, outfile_rdf):
     g.bind('ncbigene', ns_ncbigene)
     g.bind('mesh', ns_mesh)
     g.bind('omim', ns_omim)
-
+    g.bind('pc', ns_subj)
 
     fh_in = open(infile_pubtator, 'r')
     #reader = csv.reader(fh_in, delimiter="\t")
@@ -41,13 +42,12 @@ def make_rdf(infile_pubtator, outfile_rdf):
         row = line.rstrip('\n').split('\t')
         #print(str(row))
         pmid      = row[0]
+        rtype     = row[1]
         ncbi_gene = row[2]
         list_gene = ncbi_gene.split(';')
         mention   = row[3]
         resource  = row[4]
         list_resource = resource.split('|')
-        
-        
 
         # skip header
         if pmid == "PMID":
@@ -60,16 +60,19 @@ def make_rdf(infile_pubtator, outfile_rdf):
             continue
 
         blank = BNode()
+        subject = URIRef(ns_subj + str(row_num))
 
-        g.add( (blank, RDF.type, URIRef(ns_oa.Annotation)) )
-        g.add( (blank, URIRef(ns_oa.hasTarget), URIRef(ns_pubmed + pmid)) )
+        g.add( (subject, RDF.type, URIRef(ns_oa.Annotation)) )
+        g.add( (subject, URIRef(ns_dcterms + 'subject'), Literal(rtype)) )
+        g.add( (subject, URIRef(ns_oa.hasTarget), URIRef(ns_pubmed + pmid)) )
         for gene in list_gene:
-            g.add( (blank, URIRef(ns_oa.hasBody), URIRef(ns_ncbigene + gene)) )
-        
+            g.add( (subject, URIRef(ns_oa.hasBody), URIRef(ns_ncbigene + gene)) )
+
         for s in list_resource:
-            g.add( (blank, URIRef(ns_dcterms.source), Literal(s)) )
+            g.add( (subject, URIRef(ns_dcterms.source), Literal(s)) )
+
+        row_num = row_num + 1
     
-    # 
     g.serialize(destination=outfile_rdf, format='turtle')
 
     fh_in.close()
@@ -82,5 +85,3 @@ if __name__ == "__main__":
     infile_pubtator  = params[1]
     outfile_rdf      = params[2]
     make_rdf(infile_pubtator, outfile_rdf)
-
-
