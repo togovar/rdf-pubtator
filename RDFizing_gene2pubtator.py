@@ -4,27 +4,23 @@ import sys
 import json
 import re
 import codecs
-import csv
 from rdflib import Namespace, URIRef, Graph, BNode, Literal
 from rdflib.namespace import RDF, RDFS, FOAF
 
-csv.field_size_limit(1000000000)
-
-
 # make rdf file
-def make_rdf(infile_pubtator, outfile_rdf):
+
+ns_oa       = Namespace("http://www.w3.org/ns/oa#")
+ns_dcterms  = Namespace("http://purl.org/dc/terms/")
+ns_pubmed   = Namespace("http://rdf.ncbi.nlm.nih.gov/pubmed/")
+ns_dbsnp    = Namespace("http://identifiers.org/dbsnp/")
+ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
+ns_mesh     = Namespace("http://id.nlm.nih.gov/mesh/")
+ns_omim     = Namespace("http://identifiers.org/omim/")
+ns_subj     = Namespace("http://purl.jp/bio/10/pubtator-central/Gene/")
+
+def init_graph():
+
     g = Graph()
-
-    data        = Namespace("http://www.w3.org/ns/oa#")
-    ns_oa       = Namespace("http://www.w3.org/ns/oa#")
-    ns_dcterms  = Namespace("http://purl.org/dc/terms/")
-    ns_pubmed   = Namespace("http://rdf.ncbi.nlm.nih.gov/pubmed/")
-    ns_dbsnp    = Namespace("http://identifiers.org/dbsnp/")
-    ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
-    ns_mesh     = Namespace("http://id.nlm.nih.gov/mesh/")
-    ns_omim     = Namespace("http://identifiers.org/omim/")
-    ns_subj     = Namespace("http://purl.jp/bio/10/pubtator-central/Gene/")
-
     g.bind('oa', ns_oa)
     g.bind('dcterms', ns_dcterms)
     g.bind('pubmed', ns_pubmed)
@@ -34,11 +30,22 @@ def make_rdf(infile_pubtator, outfile_rdf):
     g.bind('omim', ns_omim)
     g.bind('pc', ns_subj)
 
-    fh_in = open(infile_pubtator, 'r')
-    #reader = csv.reader(fh_in, delimiter="\t")
-    lines = fh_in.readlines()
-    row_num = 0
-    for line in lines:
+    return(g)
+
+def make_rdf(start_number):
+
+    row_num = start_number
+    step = 10000
+    count = 0
+
+    for line in sys.stdin:
+        if(count == 0):
+            g = init_graph()
+        elif(count == step):
+            count = 0
+            sys.stdout.write(g.serialize(format='ntriples').decode('ascii'))
+            g = init_graph()
+
         row = line.rstrip('\n').split('\t')
         #print(str(row))
         pmid      = row[0]
@@ -59,7 +66,6 @@ def make_rdf(infile_pubtator, outfile_rdf):
             print('Error: "' + ncbi_gene + '" is not match RS number format', file=sys.stderr)
             continue
 
-        blank = BNode()
         subject = URIRef(ns_subj + str(row_num))
 
         g.add( (subject, RDF.type, URIRef(ns_oa.Annotation)) )
@@ -72,16 +78,17 @@ def make_rdf(infile_pubtator, outfile_rdf):
             g.add( (subject, URIRef(ns_dcterms.source), Literal(s)) )
 
         row_num = row_num + 1
-    
-    g.serialize(destination=outfile_rdf, format='turtle')
+        count = count + 1
 
-    fh_in.close()
+    if(count > 0):
+        sys.stdout.write(g.serialize(format='ntriples').decode('ascii'))
     return
-
 
 # main
 if __name__ == "__main__":
     params = sys.argv
-    infile_pubtator  = params[1]
-    outfile_rdf      = params[2]
-    make_rdf(infile_pubtator, outfile_rdf)
+    if len(params) == 2:
+        start_number = params[1]
+    else:
+        start_number = 0
+    make_rdf(start_number)
