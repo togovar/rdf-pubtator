@@ -38,11 +38,11 @@ def make_rdf(start_number, step_count, inputfile, out_format):
     file_name, file_extension = os.path.splitext(inputfile)
     try:
       if(file_extension == ".gz"):
-        f = gzip.open(inputfile, 'rt')
+        f = gzip.open(inputfile, 'rt', encoding='utf-8')
       elif(file_name == ""):
         f = sys.stdin
       else:
-        f = open(inputfile)
+        f = open(inputfile, 'rt', encoding='utf-8')
     except FileNotFoundError:
       sys.stderr.write("Couldn't open the file:" + inputfile + "\n")
       exit(-1)
