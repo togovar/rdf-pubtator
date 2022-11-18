@@ -54,10 +54,10 @@ echo "Started convert at $now"
 
 # コンバータの仕様に合わせて1000万行毎のファイルに分割してからRDF変換を行う
 zcat ./disease2pubtatorcentral.gz | split -$STEP --filter='gzip -c > $FILE.gz' - disease2pubtatorcentral-
-ls disease2pubtatorcentral-*.gz | cat -n | awk "{print (\$1-1)*$STEP,\$2}" | xargs -P$NUM_PARALLEL -IIN sh -c "OUT=\$(echo IN | cut -f2 -d' ' | sed 's/gz/ttl/'); python /RDFizing_disease2pubtator.py -s IN > \$OUT"
+ls disease2pubtatorcentral-*.gz | cat -n | awk "{print (\$1-1)*$STEP,\$2}" | xargs -P$NUM_PARALLEL -IIN sh -c "OUT=\$(echo IN | cut -f2 -d' ' | sed 's/gz/ttl/'); python /RDFizing_disease2pubtator.py -s IN | gzip -c > \${OUT}.gz"
 
 zcat ./gene2pubtatorcentral.gz | split -$STEP --filter='gzip -c > $FILE.gz' - gene2pubtatorcentral-
-ls gene2pubtatorcentral-*.gz | cat -n | awk "{print (\$1-1)*$STEP,\$2}" | xargs -P$NUM_PARALLEL -IIN sh -c "OUT=\$(echo IN | cut -f2 -d' ' | sed 's/gz/ttl/'); python /RDFizing_gene2pubtator.py -s IN > \$OUT"
+ls gene2pubtatorcentral-*.gz | cat -n | awk "{print (\$1-1)*$STEP,\$2}" | xargs -P$NUM_PARALLEL -IIN sh -c "OUT=\$(echo IN | cut -f2 -d' ' | sed 's/gz/ttl/'); python /RDFizing_gene2pubtator.py -s IN | gzip -c > \${OUT}.gz"
 
 python /RDFizing_mutation2pubtator.py ./mutation2pubtatorcentral /data/mutation2pubtatorcentral.ttl
 
@@ -66,4 +66,4 @@ echo "Finished convert at $now"
 
 chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
 rm disease2pubtatorcentral gene2pubtatorcentral mutation2pubtatorcentral $(ls disease2pubtatorcentral-*) $(ls gene2pubtatorcentral-*)
-cd /data && chmod 666 $(ls disease2pubtatorcentral*.ttl) $(ls gene2pubtatorcentral*.ttl) $(ls mutation2pubtatorcentral*.ttl)
+cd /data && chmod 666 $(ls disease2pubtatorcentral*.ttl.gz) $(ls gene2pubtatorcentral*.ttl.gz) $(ls mutation2pubtatorcentral*.ttl)
