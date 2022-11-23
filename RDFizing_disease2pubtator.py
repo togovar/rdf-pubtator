@@ -18,6 +18,7 @@ ns_ncbigene = Namespace("http://identifiers.org/ncbigene/")
 ns_mesh     = Namespace("http://identifiers.org/mesh/")
 ns_omim     = Namespace("http://identifiers.org/omim/")
 ns_subj     = Namespace("http://purl.jp/bio/10/pubtator-central/Disease/")
+ns_dbo      = Namespace("http://purl.jp/bio/10/pubtator-central/ontology#")
 
 def init_graph():
 
@@ -63,10 +64,9 @@ def make_rdf(start_number, step_count, inputfile, out_format):
             pmid     = row[0]
             rtype    = row[1]
             disease  = row[2]
-            mention  = row[3]
-            list_mention = mention.split('|')
-            resource = row[4]
-            list_resource = resource.split('|')
+#            mention  = row[3]
+#            list_mention = mention.split('|')
+            list_tools = row[4].split('|')
         except IndexError:
             continue
 
@@ -78,8 +78,8 @@ def make_rdf(start_number, step_count, inputfile, out_format):
         g.add( (subject, RDF.type, URIRef(ns_oa.Annotation)) )
         g.add( (subject, URIRef(ns_dcterms + 'subject'), Literal(rtype)) )
         g.add( (subject, URIRef(ns_oa.hasTarget), URIRef(ns_pubmed + pmid)) )
-        for mention in list_mention:
-            g.add( (subject, RDFS.label, Literal(mention)) )
+#        for mention in list_mention:
+#            g.add( (subject, RDFS.label, Literal(mention)) )
 
         # add disease id triple
         match_mesh = re.match(r'^MESH', disease)
@@ -96,8 +96,9 @@ def make_rdf(start_number, step_count, inputfile, out_format):
                 g.add( (subject, URIRef(ns_oa.hasBody), URIRef(ns_omim + o)) )
 
         # add resource triple
-        for s in list_resource:
-            g.add( (subject, URIRef(ns_dcterms.source), Literal(s)) )
+#        for s in list_resource:
+#            g.add( (subject, URIRef(ns_dcterms.source), Literal(s)) )
+        g.add( (subject, URIRef(ns_dbo + 'annotation_count'), Literal(len(list_tools))) )
     
     # output RDF
         row_num = row_num + 1
