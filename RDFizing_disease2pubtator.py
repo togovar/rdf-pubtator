@@ -56,7 +56,7 @@ def make_rdf(start_number, step_count, inputfile, out_format):
             g = init_graph()
         elif(count == step_count):
             count = 0
-            sys.stdout.write(g.serialize(format=out_format).decode('utf-8'))
+            sys.stdout.write(g.serialize(format=out_format))
             g = init_graph()
 
         row = line.rstrip('\n').split('\t')
@@ -106,7 +106,7 @@ def make_rdf(start_number, step_count, inputfile, out_format):
 
     f.close()
     if(count > 0):
-        sys.stdout.write(g.serialize(format=out_format).decode('utf-8'))
+        sys.stdout.write(g.serialize(format=out_format))
 
     return
 
