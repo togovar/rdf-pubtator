@@ -64,5 +64,5 @@ now=`date "+%Y%m%d-%H%M%S"`
 echo "Finished convert at $now"
 
 chmod 666 $(ls disease2pubtatorcentral*) $(ls gene2pubtatorcentral*) $(ls mutation2pubtatorcentral*)
-rm disease2pubtatorcentral gene2pubtatorcentral mutation2pubtatorcentral $(ls disease2pubtatorcentral-*) $(ls gene2pubtatorcentral-*)
+rm -f disease2pubtatorcentral gene2pubtatorcentral mutation2pubtatorcentral $(ls disease2pubtatorcentral-*) $(ls gene2pubtatorcentral-*)
 cd /data && chmod 666 $(ls disease2pubtatorcentral*.ttl.gz) $(ls gene2pubtatorcentral*.ttl.gz) $(ls mutation2pubtatorcentral*.ttl)
