@@ -22,9 +22,9 @@ cd /work
 # ファイルのダウンロード
 now=`date "+%Y%m%d-%H%M%S"`
 echo "Started wget at $now"
-wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/disease2pubtatorcentral.gz 2> /wget_disease.log
-wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/gene2pubtatorcentral.gz 2> /wget_gene.log
-wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTatorCentral/mutation2pubtatorcentral.gz 2> /wget_mutation.log
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTator3/disease2pubtatorcentral.gz 2> /wget_disease.log
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTator3/gene2pubtatorcentral.gz 2> /wget_gene.log
+wget -N https://ftp.ncbi.nlm.nih.gov/pub/lu/PubTator3/mutation2pubtatorcentral.gz 2> /wget_mutation.log
 now=`date "+%Y%m%d-%H%M%S"`
 echo "Finished wget at $now"
 
