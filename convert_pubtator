@@ -59,10 +59,11 @@ zcat ./gene2pubtator3.gz | perl /conv_ptc.pl | sort -S 4G --compress=gzip --para
 ls gene2pubtator3-*.gz | cat -n | awk "{print (\$1-1)*$STEP,\$2}" | xargs -P$NUM_PARALLEL -IIN sh -c "OUT=\$(echo IN | cut -f2 -d' ' | sed 's/gz/ttl/'); python /RDFizing_gene2pubtator.py -s IN | gzip -c > /data/\${OUT}.gz"
 
 python /RDFizing_mutation2pubtator.py ./mutation2pubtator3 /data/mutation2pubtator3.ttl
+gzip /data/mutation2pubtator3.ttl
 
 now=`date "+%Y%m%d-%H%M%S"`
 echo "Finished convert at $now"
 
 chmod 666 $(ls disease2pubtator3*) $(ls gene2pubtator3*) $(ls mutation2pubtator3*)
 rm -f disease2pubtator3 gene2pubtator3 mutation2pubtator3 $(ls disease2pubtator3-*) $(ls gene2pubtator3-*)
-cd /data && chmod 666 $(ls disease2pubtator3*.ttl.gz) $(ls gene2pubtator3*.ttl.gz) $(ls mutation2pubtator3*.ttl)
+cd /data && chmod 666 $(ls disease2pubtator3*.ttl.gz) $(ls gene2pubtator3*.ttl.gz) $(ls mutation2pubtator3*.ttl.gz)
